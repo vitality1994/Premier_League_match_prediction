@@ -96,3 +96,115 @@ for i in selected_atts_keeper:
 for i in list(merged_player_data.keys()):
     if i not in list_all_keys_needed:
         del(merged_player_data[i])
+
+
+# Delete feature "season" because we don't need anymore
+for i in merged_player_data.keys():
+    del(merged_player_data[i]['seasons'])
+
+
+
+def pre_processing_for_average_att(given_data):
+    
+    pre_processed_merged_player_data ={}
+
+    data = given_data
+    keys = list(merged_player_data.keys())
+    
+    # not_necessasry_features = ['playerId', 'nationalTeam', 'birth', 'age', 'name', 'id']
+    
+    for i in keys:
+
+
+        # for k in not_necessasry_features:
+
+        #     if k != 'age':
+
+        #         del(data[i]['entity'][k])
+
+
+        #     else:
+        #         age_temp = int(data[i]['entity'][k][:2])
+
+        #         data[i]['age'] = age_temp
+
+
+        # del(data[i]['entity'])
+
+
+        official_dict = {}
+        dict_pre_prcoessed_player = {}
+
+
+        official_dict['official_stats'] = data[i]['official_stats']
+
+
+        dict_pre_prcoessed_player[i] = official_dict
+        dict_pre_prcoessed_player[i]['age'] = int(data[i]['entity']['age'][:2])/35
+
+        
+        if 'fm_data' in data[i].keys():
+            dict_pre_prcoessed_player[i]['fm_data'] = data[i]['fm_data']['attributes']
+            dict_pre_prcoessed_player[i]['fm_data']['Length'] = data[i]['fm_data']['Length']
+            dict_pre_prcoessed_player[i]['fm_data']['Weight'] = data[i]['fm_data']['Weight']
+            dict_pre_prcoessed_player[i]['fm_data']['Sell value'] = data[i]['fm_data']['Sell value']
+            dict_pre_prcoessed_player[i]['fm_data']['Wages'] = data[i]['fm_data']['Wages']
+            dict_pre_prcoessed_player[i]['fm_data']['ability'] = data[i]['fm_data']['ability']
+            dict_pre_prcoessed_player[i]['fm_data']['potential'] = data[i]['fm_data']['potential']
+
+        if  data[i]['entity']['info']['position']!='G':
+            dict_pre_prcoessed_player[i]['is_keeper'] = 0 
+
+        if  data[i]['entity']['info']['position']=='G':
+            dict_pre_prcoessed_player[i]['is_keeper'] = 1 
+
+
+        all_atts = list(dict_pre_prcoessed_player[i]['official_stats'].keys())
+
+        for k in all_atts:
+            
+            #if role == 'field':
+            if  data[i]['entity']['info']['position']!='G':
+
+                if k not in list_selected_atts_field:
+                    del(dict_pre_prcoessed_player[i]['official_stats'][k])
+                
+                    
+            #if role == 'keeper':
+            if  data[i]['entity']['info']['position']=='G':   
+
+                if k not in list_selected_atts_keeper:
+                    del(dict_pre_prcoessed_player[i]['official_stats'][k])
+
+
+        pre_processed_merged_player_data[i] = dict_pre_prcoessed_player[i]
+
+    return pre_processed_merged_player_data
+
+
+
+
+
+    #     if  len(data[i]['official_stats'])==0:
+    #         del(data[i])
+    #     elif len(data[i]['official_stats'])==0:
+    #         del(data[i])
+
+    #     if 'position' not in list(data[i]['entity']['info'].keys()):
+    #         del(data[i])
+    #         print('!')
+            
+    #     if role == 'keeper':
+    #         if data[i]['entity']['info']['position']!='G':
+    #             del(data[i])
+    #             print('!')
+    #     if role == 'field':
+    #         if data[i]['entity']['info']['position']=='G':
+    #             del(data[i])
+    #             print('!')
+
+
+    #     age = {}
+
+
+pre_processed_data = pre_processing_for_average_att(merged_player_data)
