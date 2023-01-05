@@ -1,6 +1,8 @@
-# 2 Steps of player data pre-processing
+# Two Steps of player data pre-processing
 # 1. Decide how many attributes we will use to make player dataset. (How many features for player dataset?)
 # 2. Impute missing values. (Not all players have fm_attributes & some players does not have all of selected official stats)
+#   - Impute using mean value
+#   - Impute using KNN algorithm
 
 
 # Import packages
@@ -104,33 +106,14 @@ for i in merged_player_data.keys():
 
 
 
-def pre_processing_for_average_att(given_data):
+def pre_processing_1(given_data):
     
     pre_processed_merged_player_data ={}
 
     data = given_data
     keys = list(merged_player_data.keys())
-    
-    # not_necessasry_features = ['playerId', 'nationalTeam', 'birth', 'age', 'name', 'id']
-    
+        
     for i in keys:
-
-
-        # for k in not_necessasry_features:
-
-        #     if k != 'age':
-
-        #         del(data[i]['entity'][k])
-
-
-        #     else:
-        #         age_temp = int(data[i]['entity'][k][:2])
-
-        #         data[i]['age'] = age_temp
-
-
-        # del(data[i]['entity'])
-
 
         official_dict = {}
         dict_pre_prcoessed_player = {}
@@ -163,14 +146,12 @@ def pre_processing_for_average_att(given_data):
 
         for k in all_atts:
             
-            #if role == 'field':
             if  data[i]['entity']['info']['position']!='G':
 
                 if k not in list_selected_atts_field:
                     del(dict_pre_prcoessed_player[i]['official_stats'][k])
                 
                     
-            #if role == 'keeper':
             if  data[i]['entity']['info']['position']=='G':   
 
                 if k not in list_selected_atts_keeper:
@@ -180,31 +161,77 @@ def pre_processing_for_average_att(given_data):
         pre_processed_merged_player_data[i] = dict_pre_prcoessed_player[i]
 
     return pre_processed_merged_player_data
+    
+
+
+
+def ave_atts(data):
+
+    ave_att_dict_keeper = {}
+    ave_att_dict_field = {}
+    num_keeper = 0
+    num_field = 0
+
+    for i in data.keys():
+
+        count = 0 
+
+        if data[i]['is_keeper']==1:
+
+            for k in data[i]['official_stats']:
+
+                if k in list_selected_atts_keeper:
+                    count+=1
+
+            if count==21:
+                num_keeper += 1
+
+                for a in list_selected_atts_keeper:
+
+                    if a not in ave_att_dict_keeper.keys():
+                        ave_att_dict_keeper[a] = data[i]['official_stats'][a]
+
+                    else:
+                        ave_att_dict_keeper[a] += data[i]['official_stats'][a]
+        
+
+
+        elif data[i]['is_keeper']==0:
+
+            for k in data[i]['official_stats']:
+
+                if k in list_selected_atts_field:
+                    count+=1
+
+
+            if count==21:
+                num_field += 1
+
+                for a in list_selected_atts_field:
+
+                    if a not in ave_att_dict_field.keys():
+                        ave_att_dict_field[a] = data[i]['official_stats'][a]
+
+                    else:
+                        ave_att_dict_field[a] += data[i]['official_stats'][a]
+
+
+    for i in ave_att_dict_keeper.keys():
+            ave_att_dict_keeper[i] /= num_keeper
+
+    for i in ave_att_dict_field.keys():
+        ave_att_dict_field[i] /= num_field            
+
+    print(num_field)
+    print(num_keeper)
+
+    return ave_att_dict_field, ave_att_dict_keeper
+
+    
 
 
 
 
+pre_processed_data = pre_processing_1(merged_player_data)
 
-    #     if  len(data[i]['official_stats'])==0:
-    #         del(data[i])
-    #     elif len(data[i]['official_stats'])==0:
-    #         del(data[i])
-
-    #     if 'position' not in list(data[i]['entity']['info'].keys()):
-    #         del(data[i])
-    #         print('!')
-            
-    #     if role == 'keeper':
-    #         if data[i]['entity']['info']['position']!='G':
-    #             del(data[i])
-    #             print('!')
-    #     if role == 'field':
-    #         if data[i]['entity']['info']['position']=='G':
-    #             del(data[i])
-    #             print('!')
-
-
-    #     age = {}
-
-
-pre_processed_data = pre_processing_for_average_att(merged_player_data)
+print(ave_atts(pre_processed_data))
