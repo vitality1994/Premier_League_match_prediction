@@ -229,9 +229,35 @@ def ave_atts(data):
 
     
 
-
-
-
 pre_processed_data = pre_processing_1(merged_player_data)
+ave_field, ave_keeper = ave_atts(pre_processed_data)
 
-print(ave_atts(pre_processed_data))
+
+
+# ---------- with following codes below, we can check there are some players who does not have 
+# ---------- 21 selected attributes fully all of those players include selected attributes at least 14. 
+# ---------- Therefore, we can use KNN for also official_stats.
+
+# keys_lack_stats = []
+
+# count = 0
+# count2 = 0
+# keys = list(pre_processed_data.keys())
+# for i in keys:
+#     if len(pre_processed_data[i]['official_stats'])!=21:
+#         count += 1
+#         keys_lack_stats.append(i)
+
+#     else:
+#         count2 +=1
+
+# print("total # players", len(list(pre_processed_data.keys())))
+# print("total # lack player", count, len(keys_lack_stats))
+# print("total # not empty", count2)
+
+
+
+# for i in keys_lack_stats:
+#     print(len(pre_processed_data[i]['official_stats'].keys()))
+
+# --------------------------------------------------------------------------
