@@ -9,8 +9,7 @@
 import json
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import copy
+
 
 # Function for reading json file as a list
 def read_jsonl_file(path):
@@ -222,9 +221,6 @@ def ave_atts(data):
     for i in ave_att_dict_field.keys():
         ave_att_dict_field[i] /= num_field            
 
-    print(num_field)
-    print(num_keeper)
-
     return ave_att_dict_field, ave_att_dict_keeper
 
     
@@ -261,3 +257,161 @@ ave_field, ave_keeper = ave_atts(pre_processed_data)
 #     print(len(pre_processed_data[i]['official_stats'].keys()))
 
 # --------------------------------------------------------------------------
+
+
+
+list_keys_field = []
+list_keys_keeper = []
+
+for i in pre_processed_data.keys():
+
+    if pre_processed_data[i]['is_keeper']==1:
+        list_keys_keeper.append(i)
+
+    else:
+        list_keys_field.append(i)
+
+
+fm_atts_field = pre_processed_data['4999']['fm_data'].keys()
+fm_atts_keeper = pre_processed_data['4330']['fm_data'].keys()
+
+fixed_data = {}
+
+
+for i in pre_processed_data.keys():
+    
+    fixed_data[i] = {}
+
+    for key, value in pre_processed_data[i]['official_stats'].items():
+        fixed_data[i][key] = value
+    
+
+    if 'fm_data' in pre_processed_data[i].keys():
+
+        for key, value in pre_processed_data[i]['fm_data'].items():
+            fixed_data[i][key+'_fm'] = value
+
+    fixed_data[i]['age'] = pre_processed_data[i]['age']
+    fixed_data[i]['is_keeper'] = pre_processed_data[i]['is_keeper']
+
+
+
+list_field_att = {}
+list_field_age = {}
+list_field_fm = {}
+list_is_keeper_field = {}
+
+
+temp = []
+for i in range(len(list_keys_field)):
+    temp.append(1)
+list_is_keeper_field['is_keeper'] = temp
+
+temp = []
+for i in list_keys_field:
+    temp.append(fixed_data[i]['age'])
+
+list_field_age['age'] = temp
+
+for i in list_selected_atts_field:
+    
+    temp = []
+    
+    for k in list_keys_field:
+        
+        if i in fixed_data[k].keys():
+            temp.append(fixed_data[k][i])
+            
+        else:
+            
+            temp.append(np.nan)
+        
+    list_field_att[i] = temp
+
+for i in fm_atts_field:
+    
+    temp = []
+    
+    for k in list_keys_field:
+            
+        if i+"_fm" in fixed_data[k].keys():
+
+            temp.append(fixed_data[k][i+"_fm"])
+
+        else:
+
+            temp.append(np.nan)
+
+        
+    list_field_fm[i+"_fm"]=temp
+
+
+new_1 = pd.DataFrame.from_dict(list_field_att)
+new_2 = pd.DataFrame.from_dict(list_field_age)
+new_3 = pd.DataFrame.from_dict(list_field_fm)
+new_4 = pd.DataFrame.from_dict(list_is_keeper_field)
+
+print('Dataframe of field players')
+print(pd.concat([new_1, new_3, new_2, new_4], axis=1))
+
+
+
+list_keeper_att = {}
+list_keeper_age = {}
+list_keeper_fm = {}
+list_is_keeper_keeper = {}
+
+
+temp = []
+for i in range(len(list_keys_keeper)):
+    temp.append(0)
+list_is_keeper_keeper['is_keeper'] = temp
+
+temp = []
+for i in list_keys_keeper:
+    temp.append(fixed_data[i]['age'])
+
+list_keeper_age['age'] = temp
+
+for i in list_selected_atts_keeper:
+    
+    temp = []
+    
+    for k in list_keys_keeper:
+        
+        if i in fixed_data[k].keys():
+            temp.append(fixed_data[k][i])
+            
+        else:
+            
+            temp.append(np.nan)
+        
+    list_keeper_att[i] = temp
+
+for i in fm_atts_keeper:
+    
+    temp = []
+    
+    for k in list_keys_keeper:
+            
+        if i+"_fm" in fixed_data[k].keys():
+
+            temp.append(fixed_data[k][i+"_fm"])
+
+        else:
+
+            temp.append(np.nan)
+
+        
+    list_keeper_fm[i+"_fm"]=temp
+
+
+
+
+new_1 = pd.DataFrame.from_dict(list_keeper_att)
+new_2 = pd.DataFrame.from_dict(list_keeper_age)
+new_3 = pd.DataFrame.from_dict(list_keeper_fm)
+new_4 = pd.DataFrame.from_dict(list_is_keeper_keeper)
+
+print('Dataframe of goalkeepers')
+print(pd.concat([new_1, new_3, new_2, new_4], axis=1))
