@@ -9,6 +9,8 @@
 import json
 import pandas as pd
 import numpy as np
+from sklearn.impute import KNNImputer
+
 
 
 # Function for reading json file as a list
@@ -275,8 +277,9 @@ for i in pre_processed_data.keys():
 fm_atts_field = pre_processed_data['4999']['fm_data'].keys()
 fm_atts_keeper = pre_processed_data['4330']['fm_data'].keys()
 
-fixed_data = {}
 
+
+fixed_data = {}
 
 for i in pre_processed_data.keys():
     
@@ -296,22 +299,30 @@ for i in pre_processed_data.keys():
 
 
 
-list_field_att = {}
-list_field_age = {}
-list_field_fm = {}
-list_is_keeper_field = {}
+dict_field_att = {}
+dict_field_age = {}
+dict_field_fm = {}
+dict_is_keeper_field = {}
+dict_keys_field = {}
+
+
+temp = []
+for i in list_keys_field:
+    temp.append(i)
+
+dict_keys_field['key'] = temp
 
 
 temp = []
 for i in range(len(list_keys_field)):
-    temp.append(1)
-list_is_keeper_field['is_keeper'] = temp
+    temp.append(0)
+dict_is_keeper_field['is_keeper'] = temp
 
 temp = []
 for i in list_keys_field:
     temp.append(fixed_data[i]['age'])
 
-list_field_age['age'] = temp
+dict_field_age['age'] = temp
 
 for i in list_selected_atts_field:
     
@@ -326,7 +337,7 @@ for i in list_selected_atts_field:
             
             temp.append(np.nan)
         
-    list_field_att[i] = temp
+    dict_field_att[i] = temp
 
 for i in fm_atts_field:
     
@@ -343,35 +354,41 @@ for i in fm_atts_field:
             temp.append(np.nan)
 
         
-    list_field_fm[i+"_fm"]=temp
+    dict_field_fm[i+"_fm"]=temp
+
+new_0 = pd.DataFrame.from_dict(dict_keys_field)
+new_1 = pd.DataFrame.from_dict(dict_field_att)
+new_2 = pd.DataFrame.from_dict(dict_field_age)
+new_3 = pd.DataFrame.from_dict(dict_field_fm)
+new_4 = pd.DataFrame.from_dict(dict_is_keeper_field)
+
+dataframe_field = pd.concat([new_0, new_1, new_3, new_2, new_4], axis=1)
 
 
-new_1 = pd.DataFrame.from_dict(list_field_att)
-new_2 = pd.DataFrame.from_dict(list_field_age)
-new_3 = pd.DataFrame.from_dict(list_field_fm)
-new_4 = pd.DataFrame.from_dict(list_is_keeper_field)
-
-print('Dataframe of field players')
-print(pd.concat([new_1, new_3, new_2, new_4], axis=1))
+dict_keeper_att = {}
+dict_keeper_age = {}
+dict_keeper_fm = {}
+dict_is_keeper_keeper = {}
+dict_keys_keeper = {}
 
 
+temp = []
+for i in list_keys_keeper:
+    temp.append(i)
 
-list_keeper_att = {}
-list_keeper_age = {}
-list_keeper_fm = {}
-list_is_keeper_keeper = {}
+dict_keys_keeper['key'] = temp
 
 
 temp = []
 for i in range(len(list_keys_keeper)):
-    temp.append(0)
-list_is_keeper_keeper['is_keeper'] = temp
+    temp.append(1)
+dict_is_keeper_keeper['is_keeper'] = temp
 
 temp = []
 for i in list_keys_keeper:
     temp.append(fixed_data[i]['age'])
 
-list_keeper_age['age'] = temp
+dict_keeper_age['age'] = temp
 
 for i in list_selected_atts_keeper:
     
@@ -386,7 +403,7 @@ for i in list_selected_atts_keeper:
             
             temp.append(np.nan)
         
-    list_keeper_att[i] = temp
+    dict_keeper_att[i] = temp
 
 for i in fm_atts_keeper:
     
@@ -403,15 +420,127 @@ for i in fm_atts_keeper:
             temp.append(np.nan)
 
         
-    list_keeper_fm[i+"_fm"]=temp
+    dict_keeper_fm[i+"_fm"]=temp
 
 
 
+new_0 = pd.DataFrame.from_dict(dict_keys_keeper)
+new_1 = pd.DataFrame.from_dict(dict_keeper_att)
+new_2 = pd.DataFrame.from_dict(dict_keeper_age)
+new_3 = pd.DataFrame.from_dict(dict_keeper_fm)
+new_4 = pd.DataFrame.from_dict(dict_is_keeper_keeper)
 
-new_1 = pd.DataFrame.from_dict(list_keeper_att)
-new_2 = pd.DataFrame.from_dict(list_keeper_age)
-new_3 = pd.DataFrame.from_dict(list_keeper_fm)
-new_4 = pd.DataFrame.from_dict(list_is_keeper_keeper)
 
-print('Dataframe of goalkeepers')
-print(pd.concat([new_1, new_3, new_2, new_4], axis=1))
+
+dataframe_keeper = pd.concat([new_0, new_1, new_3, new_2, new_4], axis=1)
+
+
+
+imputer=KNNImputer(n_neighbors=3)
+
+filled_field=imputer.fit_transform(dataframe_field)
+
+filled_field=pd.DataFrame(filled_field, columns=dataframe_field.columns)
+
+
+
+imputer=KNNImputer(n_neighbors=3)
+
+filled_keeper=imputer.fit_transform(dataframe_keeper)
+
+filled_keeper=pd.DataFrame(filled_keeper, columns=dataframe_keeper.columns)
+
+
+
+dict_field = filled_field.to_dict('records')
+
+new_dict_field = {}
+
+for i in range(len(dict_field)):
+    temp = {}
+    premier_stats = {}
+    fm_stats = {}
+    
+    for n, m in dict_field[i].items():
+        if n[-2:]!='fm'and n!='key' and n!='is_keeper':
+            premier_stats[n] = m
+        elif n[-2:]=='fm':
+            fm_stats[n]=m
+    
+    temp['premier_stats'] = premier_stats
+    temp['fm_stats'] = fm_stats
+    temp['is_goalkeeper'] = 0
+    
+    new_dict_field[int(dict_field[i]['key'])] = temp
+
+
+dict_keeper = filled_keeper.to_dict('records')
+
+new_dict_keeper = {}
+
+for i in range(len(dict_keeper)):
+    temp = {}
+    premier_stats = {}
+    fm_stats = {}
+    
+    for n, m in dict_keeper[i].items():
+        if n[-2:]!='fm'and n!='key' and n!='is_keeper':
+            premier_stats[n] = m
+        elif n[-2:]=='fm':
+            fm_stats[n]=m
+    
+    temp['premier_stats'] = premier_stats
+    temp['fm_stats'] = fm_stats
+    temp['is_goalkeeper'] = 1
+    
+    new_dict_keeper[int(dict_keeper[i]['key'])] = temp
+
+
+
+list_mins_field = []
+for i in new_dict_field.keys():
+    list_mins_field.append(new_dict_field[i]['premier_stats']['mins_played'])
+
+list_mins_keeper = []
+for i in new_dict_keeper.keys():
+    list_mins_keeper.append(new_dict_keeper[i]['premier_stats']['mins_played'])
+
+
+for i in new_dict_field.keys():
+    mins_playtime = new_dict_field[i]['premier_stats']['mins_played']
+        
+    for m, n in new_dict_field[i]['premier_stats'].items():
+        
+        if m != 'age' and m != 'mins_played':
+            new_dict_field[i]['premier_stats'][m] = n / mins_playtime
+        
+        elif m == 'mins_played':
+            new_dict_field[i]['premier_stats'][m] = (n - 6) / (33374 - 6)
+
+
+for i in new_dict_keeper.keys():
+    mins_playtime = new_dict_keeper[i]['premier_stats']['mins_played']
+    
+    for m, n in new_dict_keeper[i]['premier_stats'].items():
+        
+        if m != 'age' and m != 'mins_played':
+            new_dict_keeper[i]['premier_stats'][m] = n / mins_playtime
+        
+        elif m == 'mins_played':
+            new_dict_keeper[i]['premier_stats'][m] = (n - 90) / (34959 - 90)
+
+
+normalized_field = {}
+normalized_keeper = {}
+
+for k, v in new_dict_field.items():
+    normalized_field[k] = v
+
+for k, v in new_dict_keeper.items():
+    normalized_keeper[k] = v
+
+with open('final_dataset_field_players.json', 'w', encoding='utf-8') as make_file:
+    json.dump(normalized_field, make_file, ensure_ascii=False, indent='\t')
+        
+with open('final_dataset_goalkeepers.json', 'w', encoding='utf-8') as make_file:
+    json.dump(normalized_keeper, make_file, ensure_ascii=False, indent='\t')
