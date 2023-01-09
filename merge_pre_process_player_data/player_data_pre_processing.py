@@ -1,8 +1,7 @@
-# Two Steps of player data pre-processing
-# 1. Decide how many attributes we will use to make player dataset. (How many features for player dataset?)
-# 2. Impute missing values. (Not all players have fm_attributes & some players does not have all of selected official stats)
-#   - Impute using mean value
-#   - Impute using KNN algorithm
+# Three main steps of codes.
+# Step 1. Function 'pre_processing_1': overall pre-processing of the merged player dataset (modified to simpler dict form and discarding unnecessary features).
+# Step 2. Convert pre-processed dataset to data frame and implement KNN to fill missing values out.
+# Step 3. Modified filled-out dataset to proper form for experiments.
 
 
 # Import packages
@@ -10,7 +9,6 @@ import json
 import pandas as pd
 import numpy as np
 from sklearn.impute import KNNImputer
-
 
 
 # Function for reading json file as a list
@@ -106,7 +104,7 @@ for i in merged_player_data.keys():
     del(merged_player_data[i]['seasons'])
 
 
-
+# Step1.Function 'pre_processing_1': overall pre-processing of the merged player dataset (modified to simpler dict form and discarding unnecessary features).
 def pre_processing_1(given_data):
     
     pre_processed_merged_player_data ={}
@@ -162,75 +160,8 @@ def pre_processing_1(given_data):
         pre_processed_merged_player_data[i] = dict_pre_prcoessed_player[i]
 
     return pre_processed_merged_player_data
-    
-
-
-
-def ave_atts(data):
-
-    ave_att_dict_keeper = {}
-    ave_att_dict_field = {}
-    num_keeper = 0
-    num_field = 0
-
-    for i in data.keys():
-
-        count = 0 
-
-        if data[i]['is_keeper']==1:
-
-            for k in data[i]['official_stats']:
-
-                if k in list_selected_atts_keeper:
-                    count+=1
-
-            if count==21:
-                num_keeper += 1
-
-                for a in list_selected_atts_keeper:
-
-                    if a not in ave_att_dict_keeper.keys():
-                        ave_att_dict_keeper[a] = data[i]['official_stats'][a]
-
-                    else:
-                        ave_att_dict_keeper[a] += data[i]['official_stats'][a]
-        
-
-
-        elif data[i]['is_keeper']==0:
-
-            for k in data[i]['official_stats']:
-
-                if k in list_selected_atts_field:
-                    count+=1
-
-
-            if count==21:
-                num_field += 1
-
-                for a in list_selected_atts_field:
-
-                    if a not in ave_att_dict_field.keys():
-                        ave_att_dict_field[a] = data[i]['official_stats'][a]
-
-                    else:
-                        ave_att_dict_field[a] += data[i]['official_stats'][a]
-
-
-    for i in ave_att_dict_keeper.keys():
-            ave_att_dict_keeper[i] /= num_keeper
-
-    for i in ave_att_dict_field.keys():
-        ave_att_dict_field[i] /= num_field            
-
-    return ave_att_dict_field, ave_att_dict_keeper
-
-    
 
 pre_processed_data = pre_processing_1(merged_player_data)
-ave_field, ave_keeper = ave_atts(pre_processed_data)
-
-
 
 # ---------- with following codes below, we can check there are some players who does not have 
 # ---------- 21 selected attributes fully all of those players include selected attributes at least 14. 
@@ -261,6 +192,7 @@ ave_field, ave_keeper = ave_atts(pre_processed_data)
 # --------------------------------------------------------------------------
 
 
+# Step 2. Convert pre-processed dataset to data frame and implement KNN to fill missing values out.
 
 list_keys_field = []
 list_keys_keeper = []
@@ -451,6 +383,7 @@ filled_keeper=imputer.fit_transform(dataframe_keeper)
 filled_keeper=pd.DataFrame(filled_keeper, columns=dataframe_keeper.columns)
 
 
+# Step 3. Modified filled-out dataset to proper form for experiments.
 
 dict_field = filled_field.to_dict('records')
 
@@ -539,8 +472,8 @@ for k, v in new_dict_field.items():
 for k, v in new_dict_keeper.items():
     normalized_keeper[k] = v
 
-with open('final_dataset_field_players.json', 'w', encoding='utf-8') as make_file:
+with open('/Users/jooyong/github_locals/CSCI5525_project/datasets/final_dataset_field_players.json', 'w', encoding='utf-8') as make_file:
     json.dump(normalized_field, make_file, ensure_ascii=False, indent='\t')
         
-with open('final_dataset_goalkeepers.json', 'w', encoding='utf-8') as make_file:
+with open('/Users/jooyong/github_locals/CSCI5525_project/datasets/final_dataset_goalkeepers.json', 'w', encoding='utf-8') as make_file:
     json.dump(normalized_keeper, make_file, ensure_ascii=False, indent='\t')
