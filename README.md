@@ -11,7 +11,12 @@ There has been a lot of interest in predicting match outcomes of football (or so
 ## Details of Folders
 ### fm_inside/fm_inside_scraper
 This folder includes web scrapers to extract in-game attributes of players from the [FMinside](https://fminside.net/players)
-## premier_matches
+- [list_links.py](fm_inside/fm_inside_scraper/list_links.py) will generate [list_links.txt](fm_inside/fm_inside_scraper/list_links.txt) includes each link of a player. Links will be used in [fm_inside_spider.py](fm_inside/fm_inside_scraper/fm_inside_scraper/spiders/fm_inside_spider.py) and this file will generate [fm_players.json](fm_inside/fm_inside_scraper/fm_inside_scraper/spiders/fm_players.json) includes fm attributes of each player.
+## premier_official_data
 This folder includes web scrapers to extract players' official statistics and official match details from the [Premier Leagure Official Website](https://www.premierleague.com/matchweek/7847/blog)
+## Analysis
 
-changes!
+## datasets
+
+## Experiments
+
