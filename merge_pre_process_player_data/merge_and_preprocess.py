@@ -243,5 +243,5 @@ for i in merged_data.keys():
 print("total number of matched players:", count)
 
 
-with open('merged_player_data.json', 'w', encoding='utf-8') as make_file:
+with open('./merged_player_data.json', 'w', encoding='utf-8') as make_file:
     json.dump(merged_data, make_file, ensure_ascii=False, indent='\t')

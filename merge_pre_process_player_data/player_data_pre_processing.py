@@ -22,7 +22,7 @@ def read_jsonl_file(path):
 
 # Import required players' id data and players' official/fm features
 # *players who played from season 2012-13 ~ 2021-22
-required_players_id = read_jsonl_file('/Users/jooyong/github_locals/CSCI5525_project/merge_pre_process_player_data/team_ids_player_ids.json')
+required_players_id = read_jsonl_file('/Users/jooyong/github_locals/CSCI5525_project/premier_official_data/team_ids_player_ids.jsonl')
 
 
 list_all_keys_needed = []
@@ -33,7 +33,7 @@ for i in range(len(required_players_id)):
 list_all_keys_needed = list(set(list_all_keys_needed))
 
 
-with open('/Users/jooyong/github_locals/CSCI5525_project/merge_pre_process_player_data/merged_player_data.json') as f:
+with open('./merged_player_data.json') as f:
     merged_player_data = json.load(f)
 
 
@@ -471,6 +471,9 @@ for k, v in new_dict_field.items():
 
 for k, v in new_dict_keeper.items():
     normalized_keeper[k] = v
+
+print(len(normalized_field))
+print(len(normalized_keeper))
 
 with open('/Users/jooyong/github_locals/CSCI5525_project/datasets/final_dataset_field_players.json', 'w', encoding='utf-8') as make_file:
     json.dump(normalized_field, make_file, ensure_ascii=False, indent='\t')
