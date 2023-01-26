@@ -39,7 +39,7 @@ Each of files [final_data_field_players.json](datasets/final_dataset_field_playe
 ### experiments
 Three different mathods are used for expriments (training the model and predicting match outcomes). 
 
-- [Elo rating system](Experiments/EloUpdated.ipynb): It was created by Arpad Elo, is an effective method to calculate the relative strengths of players or teams with respect to their opponents. After fitting the system to learn each team’s relative strengths, we can predict the probability of the outcome of the match.
+- [Elo rating system](Egxperiments/EloUpdated.ipynb): It was created by Arpad Elo, is an effective method to calculate the relative strengths of players or teams with respect to their opponents. After fitting the system to learn each team’s relative strengths, we can predict the probability of the outcome of the match.
 
 - We conducted [6 baseline experiments with Support Vector Machin (SVM) and Random Forest Machine Learning models](Experiments/SVM_RandomForest.py) to predict match results when:
     1. all_season_official_statistics are given to each player.
@@ -52,6 +52,6 @@ Three different mathods are used for expriments (training the model and predicti
 
 - We created a [large HGCN network](Experiments/graph) for each season and evaluated the network at per season level. The task here is to classify the type of edges between team-team nodes.
 
-- [Feature_importances](Experiments/Feature_importances.ipynb): To better understand the models we trained, We observed the importance of each feature using the function RandomForestClassi- fier.feature_importances_. There are features that have high importance commonly in terms of player role between field player and goalkeeper.
+- [Feature_importances](Experiments/Feature_importance.ipynb): To better understand the models we trained, We observed the importance of each feature using the function RandomForestClassi- fier.feature_importances_. There are features that have high importance commonly in terms of player role between field player and goalkeeper.
 
 
