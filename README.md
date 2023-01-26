@@ -33,15 +33,15 @@ We observed that not every player has the same diversity of all-season official 
 
 
 ### datasets
-Each of [files final_data_field_players.json](datasets/final_dataset_field_players.json) and [final_dataset_goalkeepers.json](datasets/final_dataset_goalkeepers.json) includes 1499 field players and 128 goal-keepers respectively. Each player’s data includes 2 attributes: players’ all season official statistics and in-game attributes. For all season official statistics, a field player contains 22 attributes, such as touches, successful_final_third_passes, poss_lost_all, and accurate_pass, and a goalkeeper contains 22 attributes as goal_kicks, saves, ball_recovery, and saves. For in-game data, a field player contains 42 attributes, such as corners, crossing, and dribbling, and a goalkeeper contains 44 attributes, such as aerial reach, punching, rushing out, one-and-one, and kicking.
+Each of files [final_data_field_players.json](datasets/final_dataset_field_players.json) and [final_dataset_goalkeepers.json](datasets/final_dataset_goalkeepers.json) includes 1499 field players and 128 goal-keepers respectively. Each player’s data includes 2 attributes: players’ all season official statistics and in-game attributes. For all season official statistics, a field player contains 22 attributes, such as touches, successful_final_third_passes, poss_lost_all, and accurate_pass, and a goalkeeper contains 22 attributes as goal_kicks, saves, ball_recovery, and saves. For in-game data, a field player contains 42 attributes, such as corners, crossing, and dribbling, and a goalkeeper contains 44 attributes, such as aerial reach, punching, rushing out, one-and-one, and kicking.
 
 
 ### experiments
 Three different mathods are used for expriments (training the model and predicting match outcomes). 
 
-- [Elo rating system](experiments/EloUpdated.ipynb): It was created by Arpad Elo, is an effective method to calculate the relative strengths of players or teams with respect to their opponents. After fitting the system to learn each team’s relative strengths, we can predict the probability of the outcome of the match.
+- [Elo rating system](Experiments/EloUpdated.ipynb): It was created by Arpad Elo, is an effective method to calculate the relative strengths of players or teams with respect to their opponents. After fitting the system to learn each team’s relative strengths, we can predict the probability of the outcome of the match.
 
-- We conducted [6 baseline experiments with Support Vector Machin (SVM) and Random Forest Machine Learning models](experiments/SVM_RandomForest.py) to predict match results when:
+- We conducted [6 baseline experiments with Support Vector Machin (SVM) and Random Forest Machine Learning models](Experiments/SVM_RandomForest.py) to predict match results when:
     1. all_season_official_statistics are given to each player.
     2. in_game_attributes are given to each player.
     3. all_season_official_statistics and in_game_attributes are given to each player.
@@ -50,8 +50,8 @@ Three different mathods are used for expriments (training the model and predicti
 
 <br/>
 
-- We created a [large HGCN network](experiments/graph) for each season and evaluated the network at per season level. The task here is to classify the type of edges between team-team nodes.
+- We created a [large HGCN network](Experiments/graph) for each season and evaluated the network at per season level. The task here is to classify the type of edges between team-team nodes.
 
-- [Feature_importances](experiments/Feature_importances.ipynb): To better understand the models we trained, We observed the importance of each feature using the function RandomForestClassi- fier.feature_importances_. There are features that have high importance commonly in terms of player role between field player and goalkeeper.
+- [Feature_importances](Experiments/Feature_importances.ipynb): To better understand the models we trained, We observed the importance of each feature using the function RandomForestClassi- fier.feature_importances_. There are features that have high importance commonly in terms of player role between field player and goalkeeper.
 
 
