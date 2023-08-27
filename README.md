@@ -35,7 +35,7 @@ This folder includes web scrapers to extract players' official statistics and of
 
 <br/>
     
-### analysis
+### Analysis
 We observed that not every player has the same diversity of all-season official statistics. Therefore, selecting some from all statistics was necessary to ensure each player had the same features. For the selection, we sorted official statistics in descending order in terms of how many times each statistic is observed in the player data and calculated the percentage of players who contains the top’ n’ statistics. We decided to use the top 21 statistics and sampled approximately 41% of players who included all of those statistics. The significant common characteristic of most players not included in the sample is that the last season those players played was before season 2012-13. Therefore, we decided to discard players who never had a match from season 2012-13 to 2021-22. This [Jupyter Notebook](./Analysis/Selecting_official_attributes.ipynb) shows the codes and process for discarding some statistics of a player and some players.
 
 <br/>
@@ -45,7 +45,7 @@ Each of files [final_data_field_players.json](datasets/final_dataset_field_playe
 
 <br/>
 
-### experiments
+### Experiments
 Three different mathods are used for expriments (training the model and predicting match outcomes). 
 
 - [Elo rating system](Egxperiments/EloUpdated.ipynb): It was created by Arpad Elo, is an effective method to calculate the relative strengths of players or teams with respect to their opponents. After fitting the system to learn each team’s relative strengths, we can predict the probability of the outcome of the match.
