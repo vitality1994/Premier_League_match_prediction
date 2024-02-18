@@ -276,7 +276,9 @@ class FootballDataset(DGLDataset):
 
 if __name__ == "__main__":
     # save_train_test_splits_by_season(dataset_path="/Users/zaemyung/Development/aml_5525/dataset/processed")
-    dataset = FootballDataset(dataset_path="/Users/zaemyung/Development/aml_5525/dataset/processed")
-    # print(len(dataset))
+
+    # dataset = FootballDataset(dataset_path="/Users/zaemyung/Development/aml_5525/dataset/processed")
+    dataset = FootballDataset(dataset_path="/Users/jooyong/github_locals/Premier_League_match_prediction/HGCN_datasets")
+    print(len(dataset))
     graph = dataset[0]
     print(graph)

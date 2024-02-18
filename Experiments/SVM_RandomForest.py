@@ -380,12 +380,12 @@ def do_exp_3(method):
 
 
 
-matches = read_jsonl_file('/Users/jooyong/github_locals/CSCI5525_project/team_ids_player_ids.jsonl')
+matches = read_jsonl_file('/Users/jooyong/github_locals/Premier_League_match_prediction/premier_official_data/team_ids_player_ids.jsonl')
 
-with open('/Users/jooyong/github_locals/CSCI5525_project/datasets/final_dataset_field_players.json') as f:
+with open('/Users/jooyong/github_locals/Premier_League_match_prediction/datasets/final_dataset_field_players.json') as f:
     final_dataset_field = json.load(f)
 
-with open('/Users/jooyong/github_locals/CSCI5525_project/datasets/final_dataset_goalkeepers.json') as f:
+with open('/Users/jooyong/github_locals/Premier_League_match_prediction/datasets/final_dataset_goalkeepers.json') as f:
     final_dataset_goalkeer = json.load(f)
 
 
